@@ -1,49 +1,30 @@
-/* ==========================================
-   PETTERSON FIRMINO - BACKEND ENGINEER PORTFOLIO
-   Terminal-inspired dark theme
-   ========================================== */
-
-/* CSS Variables */
 :root {
-    /* Colors */
     --bg-primary: #0a0a0f;
     --bg-secondary: #12121a;
     --bg-tertiary: #1a1a24;
     --bg-card: #16161f;
-
     --text-primary: #e4e4e7;
     --text-secondary: #a1a1aa;
     --text-muted: #71717a;
-
     --accent-cyan: #22d3ee;
     --accent-green: #4ade80;
     --accent-purple: #a78bfa;
     --accent-orange: #fb923c;
     --accent-pink: #f472b6;
-
     --terminal-red: #ff5f56;
     --terminal-yellow: #ffbd2e;
     --terminal-green: #27c93f;
-
-    /* Gradients */
     --gradient-cyan: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
     --gradient-glow: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(34, 211, 238, 0.06), transparent 40%);
-
-    /* Typography */
     --font-mono: 'JetBrains Mono', monospace;
     --font-sans: 'Outfit', sans-serif;
-
-    /* Spacing */
     --section-padding: 120px;
     --container-width: 1200px;
-
-    /* Transitions */
     --transition-fast: 0.15s ease;
     --transition-base: 0.3s ease;
     --transition-slow: 0.5s ease;
 }
 
-/* Reset & Base */
 *, *::before, *::after {
     margin: 0;
     padding: 0;
@@ -83,7 +64,6 @@ img {
     display: block;
 }
 
-/* Cursor Glow Effect */
 .cursor-glow {
     position: fixed;
     width: 800px;
@@ -101,16 +81,12 @@ body:hover .cursor-glow {
     opacity: 1;
 }
 
-/* Container */
 .container {
     max-width: var(--container-width);
     margin: 0 auto;
     padding: 0 24px;
 }
 
-/* ==========================================
-   NAVIGATION
-   ========================================== */
 .nav {
     position: fixed;
     top: 0;
@@ -221,7 +197,6 @@ body:hover .cursor-glow {
     transform: rotate(-45deg) translate(5px, -5px);
 }
 
-/* Mobile Menu */
 .mobile-menu {
     position: fixed;
     top: 0;
@@ -262,9 +237,6 @@ body:hover .cursor-glow {
     color: var(--accent-cyan);
 }
 
-/* ==========================================
-   HERO SECTION
-   ========================================== */
 .hero {
     min-height: 100vh;
     display: flex;
@@ -444,7 +416,6 @@ body:hover .cursor-glow {
     flex-wrap: wrap;
 }
 
-/* Buttons */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -489,7 +460,6 @@ body:hover .cursor-glow {
     color: var(--accent-cyan);
 }
 
-/* Scroll Indicator */
 .scroll-indicator {
     position: absolute;
     bottom: 40px;
@@ -521,9 +491,6 @@ body:hover .cursor-glow {
     50% { transform: translateX(-50%) translateY(8px); }
 }
 
-/* ==========================================
-   SECTION STYLES
-   ========================================== */
 section {
     padding: var(--section-padding) 0;
 }
@@ -554,9 +521,6 @@ section {
     background: linear-gradient(to right, rgba(255, 255, 255, 0.1), transparent);
 }
 
-/* ==========================================
-   ABOUT SECTION
-   ========================================== */
 .about {
     background: var(--bg-secondary);
 }
@@ -670,9 +634,6 @@ section {
     margin-top: 8px;
 }
 
-/* ==========================================
-   EXPERIENCE SECTION
-   ========================================== */
 .timeline {
     position: relative;
     padding-left: 40px;
@@ -815,9 +776,6 @@ section {
     border: 1px solid rgba(34, 211, 238, 0.2);
 }
 
-/* ==========================================
-   SKILLS SECTION
-   ========================================== */
 .skills {
     background: var(--bg-secondary);
 }
@@ -931,9 +889,6 @@ section {
     color: var(--text-secondary);
 }
 
-/* ==========================================
-   CONTACT SECTION
-   ========================================== */
 .contact-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1046,9 +1001,6 @@ section {
     transform: translateX(0);
 }
 
-/* ==========================================
-   FOOTER
-   ========================================== */
 .footer {
     padding: 40px 0;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
@@ -1075,9 +1027,6 @@ section {
 .footer-copyright .keyword { color: var(--accent-purple); }
 .footer-copyright .number { color: var(--accent-orange); }
 
-/* ==========================================
-   RESPONSIVE STYLES
-   ========================================== */
 @media (max-width: 1024px) {
     :root {
         --section-padding: 80px;
@@ -1178,9 +1127,6 @@ section {
     }
 }
 
-/* ==========================================
-   ANIMATIONS & TRANSITIONS
-   ========================================== */
 .fade-in {
     opacity: 0;
     transform: translateY(20px);
@@ -1192,7 +1138,6 @@ section {
     transform: translateY(0);
 }
 
-/* Staggered animations */
 .stagger-1 { transition-delay: 0.1s; }
 .stagger-2 { transition-delay: 0.2s; }
 .stagger-3 { transition-delay: 0.3s; }
