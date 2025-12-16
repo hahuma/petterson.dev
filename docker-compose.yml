@@ -10,9 +10,6 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-    tmpfs:
-      - /var/cache/nginx:uid=101,gid=101
-      - /var/run:uid=101,gid=101
     logging:
       driver: "json-file"
       options:
