@@ -1,0 +1,18 @@
+services:
+  portfolio:
+    build: .
+    container_name: petterson-portfolio
+    ports:
+      - "80:8080"
+    restart: unless-stopped
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /var/cache/nginx:uid=101,gid=101
+      - /var/run:uid=101,gid=101
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
