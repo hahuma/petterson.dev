@@ -1,43 +1,39 @@
 FROM node:22-alpine AS base
-
-RUN corepack enable && corepack prepare pnpm@latest --activate
-
-FROM base AS deps
 WORKDIR /app
+
+# Development
+FROM base AS dev
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY . .
+EXPOSE 3000
+CMD ["npm", "run", "dev"]
+
+# Dependencies
+FROM base AS deps
 COPY package.json package-lock.json ./
 RUN npm ci
 
+# Builder
 FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-
 ARG DATABASE_URI
 ARG PAYLOAD_SECRET
-ENV DATABASE_URI=${DATABASE_URI}
-ENV PAYLOAD_SECRET=${PAYLOAD_SECRET}
-ENV NEXT_TELEMETRY_DISABLED=1
-
+ENV DATABASE_URI=${DATABASE_URI} PAYLOAD_SECRET=${PAYLOAD_SECRET}
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
 RUN npm run build
 
+# Production
 FROM base AS runner
-WORKDIR /app
-
 ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
 
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
 USER nextjs
-
 EXPOSE 3000
-
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
-
+ENV PORT=3000 HOSTNAME="0.0.0.0"
 CMD ["node", "server.js"]
