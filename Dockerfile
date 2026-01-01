@@ -1,16 +1,35 @@
-FROM nginx:1.27-alpine
+FROM node:22-alpine AS base
 
-RUN rm -rf /usr/share/nginx/html/* \
-    && rm /etc/nginx/conf.d/default.conf
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY --chmod=644 index.html /usr/share/nginx/html/
-COPY --chmod=644 styles.css /usr/share/nginx/html/
-COPY --chmod=644 script.js /usr/share/nginx/html/
+FROM base AS deps
+WORKDIR /app
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
-EXPOSE 8080 8443
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN pnpm run build
 
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
+FROM base AS runner
+WORKDIR /app
 
-CMD ["nginx", "-g", "daemon off;"]
+ENV NODE_ENV=production
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
+
+EXPOSE 3000
+
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+CMD ["node", "server.js"]
