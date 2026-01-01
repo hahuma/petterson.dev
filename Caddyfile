@@ -1,0 +1,7 @@
+petterson.dev {
+    reverse_proxy petterson-portfolio:3000
+}
+
+blog.petterson.dev {
+    reverse_proxy blog-app:3000
+}

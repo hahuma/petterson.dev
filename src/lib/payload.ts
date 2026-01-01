@@ -74,31 +74,41 @@ interface PayloadResponse<T> {
 }
 
 export async function getPosts(): Promise<PayloadPost[]> {
-  const response = await fetch(
-    `${PAYLOAD_API_URL}/posts?where[status][equals]=published&sort=-publishedAt&depth=1`
-  );
+  try {
+    const response = await fetch(
+      `${PAYLOAD_API_URL}/posts?where[status][equals]=published&sort=-publishedAt&depth=1`
+    );
 
-  if (!response.ok) {
-    console.error('Failed to fetch posts:', response.statusText);
+    if (!response.ok) {
+      console.error('Failed to fetch posts:', response.statusText);
+      return [];
+    }
+
+    const data: PayloadResponse<PayloadPost> = await response.json();
+    return data.docs;
+  } catch (error) {
+    console.error('Failed to connect to Payload CMS:', error);
     return [];
   }
-
-  const data: PayloadResponse<PayloadPost> = await response.json();
-  return data.docs;
 }
 
 export async function getPostBySlug(slug: string): Promise<PayloadPost | null> {
-  const response = await fetch(
-    `${PAYLOAD_API_URL}/posts?where[slug][equals]=${encodeURIComponent(slug)}&where[status][equals]=published&depth=1`
-  );
+  try {
+    const response = await fetch(
+      `${PAYLOAD_API_URL}/posts?where[slug][equals]=${encodeURIComponent(slug)}&where[status][equals]=published&depth=1`
+    );
 
-  if (!response.ok) {
-    console.error('Failed to fetch post:', response.statusText);
+    if (!response.ok) {
+      console.error('Failed to fetch post:', response.statusText);
+      return null;
+    }
+
+    const data: PayloadResponse<PayloadPost> = await response.json();
+    return data.docs[0] || null;
+  } catch (error) {
+    console.error('Failed to connect to Payload CMS:', error);
     return null;
   }
-
-  const data: PayloadResponse<PayloadPost> = await response.json();
-  return data.docs[0] || null;
 }
 
 export async function getAllPostSlugs(): Promise<string[]> {
