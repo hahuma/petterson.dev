@@ -2,6 +2,14 @@
 .gitignore
 .dockerignore
 Dockerfile
-*.md
+docker-compose.yml
 .DS_Store
 .env*
+!.env.example
+node_modules
+.next
+.vercel
+*.log
+*.md
+.claude
+.github
