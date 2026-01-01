@@ -21,7 +21,9 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT }}
+          script_stop: true
           script: |
+            set -e
             cd ~/petterson.dev
             git pull origin main
             docker compose up -d --build

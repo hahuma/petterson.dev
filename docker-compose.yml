@@ -1,12 +1,26 @@
 services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - web
+    restart: unless-stopped
+
   portfolio:
     build: .
     container_name: petterson-portfolio
-    ports:
-      - "3000:3000"
     environment:
       - NODE_ENV=production
-      - PAYLOAD_CMS_URL=${PAYLOAD_CMS_URL:-http://localhost:3001}
+      - PAYLOAD_CMS_URL=http://blog-app:3000
+    networks:
+      - web
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
@@ -15,3 +29,12 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+
+networks:
+  web:
+    name: web
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:
