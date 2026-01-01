@@ -1,0 +1,30 @@
+{
+  "name": "blog.petterson.dev",
+  "version": "1.0.0",
+  "description": "Blog CMS powered by Payload",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "generate:types": "payload generate:types",
+    "payload": "payload"
+  },
+  "dependencies": {
+    "@payloadcms/db-postgres": "^3.69.0",
+    "@payloadcms/next": "^3.69.0",
+    "@payloadcms/richtext-lexical": "^3.69.0",
+    "@payloadcms/ui": "^3.69.0",
+    "next": "^15.5.9",
+    "payload": "^3.69.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.3",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "sass": "^1.97.1",
+    "typescript": "^5.9.3"
+  }
+}

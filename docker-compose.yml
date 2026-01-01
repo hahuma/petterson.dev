@@ -9,18 +9,17 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
       - caddy_config:/config
-    networks:
-      - web
+    depends_on:
+      - portfolio
+      - blog
     restart: unless-stopped
 
   portfolio:
-    build: .
+    build: ./apps/portfolio
     container_name: petterson-portfolio
     environment:
       - NODE_ENV=production
-      - PAYLOAD_CMS_URL=http://blog-app:3000
-    networks:
-      - web
+      - PAYLOAD_CMS_URL=http://blog:3000
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
@@ -30,11 +29,45 @@ services:
         max-size: "10m"
         max-file: "3"
 
-networks:
-  web:
-    name: web
-    driver: bridge
+  blog:
+    build:
+      context: ./apps/blog
+      args:
+        - DATABASE_URI=${DATABASE_URI}
+        - PAYLOAD_SECRET=${PAYLOAD_SECRET}
+    container_name: petterson-blog
+    environment:
+      - DATABASE_URI=${DATABASE_URI}
+      - PAYLOAD_SECRET=${PAYLOAD_SECRET}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  db:
+    image: postgres:16-alpine
+    container_name: petterson-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-blog}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-blog}
+      POSTGRES_DB: ${POSTGRES_DB:-blog}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-blog}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
 volumes:
   caddy_data:
   caddy_config:
+  pgdata:
