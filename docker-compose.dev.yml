@@ -1,41 +1,35 @@
 services:
-  caddy:
-    image: caddy:2-alpine
-    container_name: caddy-proxy
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data:/data
-      - caddy_config:/config
-    depends_on:
-      - portfolio
-      - blog
-    restart: unless-stopped
-
   portfolio:
-    build: ./apps/portfolio
+    build:
+      context: ./apps/portfolio
+      target: dev
     container_name: petterson-portfolio
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
       - PAYLOAD_CMS_URL=http://blog:3000
-    restart: unless-stopped
+    volumes:
+      - ./apps/portfolio/src:/app/src
+      - ./apps/portfolio/public:/app/public
+    ports:
+      - "3000:3000"
 
   blog:
     build:
       context: ./apps/blog
-      args:
-        - DATABASE_URI=${DATABASE_URI}
-        - PAYLOAD_SECRET=${PAYLOAD_SECRET}
+      target: dev
     container_name: petterson-blog
     environment:
+      - NODE_ENV=development
       - DATABASE_URI=${DATABASE_URI}
       - PAYLOAD_SECRET=${PAYLOAD_SECRET}
+    volumes:
+      - ./apps/blog/src:/app/src
+      - ./apps/blog/public:/app/public
+    ports:
+      - "3001:3000"
     depends_on:
       db:
         condition: service_healthy
-    restart: unless-stopped
 
   db:
     image: postgres:16-alpine
@@ -46,14 +40,13 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-blog}
     volumes:
       - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-blog}"]
       interval: 5s
       timeout: 5s
       retries: 5
-    restart: unless-stopped
 
 volumes:
-  caddy_data:
-  caddy_config:
   pgdata:
