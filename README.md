@@ -90,11 +90,14 @@ docker compose down
 ## Environment
 
 ```env
-DATABASE_URI=postgresql://blog:blog@db:5432/blog
 POSTGRES_USER=blog
-POSTGRES_PASSWORD=blog
+POSTGRES_PASSWORD=your-password
 POSTGRES_DB=blog
-PAYLOAD_SECRET=your-secret-key
+PAYLOAD_SECRET=your-secret
 ```
 
-Generate secret: `openssl rand -base64 32`
+Generate secrets:
+```bash
+openssl rand -base64 32  # PAYLOAD_SECRET
+openssl rand -base64 24  # POSTGRES_PASSWORD
+```

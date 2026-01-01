@@ -20,7 +20,7 @@ services:
     container_name: petterson-blog
     environment:
       - NODE_ENV=development
-      - DATABASE_URI=${DATABASE_URI}
+      - DATABASE_URI=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       - PAYLOAD_SECRET=${PAYLOAD_SECRET}
     volumes:
       - ./apps/blog/src:/app/src

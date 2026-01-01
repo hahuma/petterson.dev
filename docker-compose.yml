@@ -26,11 +26,11 @@ services:
     build:
       context: ./apps/blog
       args:
-        - DATABASE_URI=${DATABASE_URI}
+        - DATABASE_URI=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
         - PAYLOAD_SECRET=${PAYLOAD_SECRET}
     container_name: petterson-blog
     environment:
-      - DATABASE_URI=${DATABASE_URI}
+      - DATABASE_URI=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       - PAYLOAD_SECRET=${PAYLOAD_SECRET}
     depends_on:
       db:
