@@ -22,9 +22,26 @@ services:
       - PAYLOAD_CMS_URL=http://blog:3000
     restart: unless-stopped
 
+  blog-migrate:
+    build:
+      context: ./apps/blog
+      target: migrator
+      args:
+        - DATABASE_URI=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+        - PAYLOAD_SECRET=${PAYLOAD_SECRET}
+    container_name: petterson-blog-migrate
+    environment:
+      - DATABASE_URI=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      - PAYLOAD_SECRET=${PAYLOAD_SECRET}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
   blog:
     build:
       context: ./apps/blog
+      target: runner
       args:
         - DATABASE_URI=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
         - PAYLOAD_SECRET=${PAYLOAD_SECRET}
@@ -35,6 +52,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      blog-migrate:
+        condition: service_completed_successfully
     restart: unless-stopped
 
   db:
