@@ -5,3 +5,5 @@ petterson.dev {
 blog.petterson.dev {
     reverse_proxy blog:3000
 }
+
+import /etc/caddy/sites/*.caddy
