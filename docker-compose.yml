@@ -5,13 +5,14 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - ${HOME}/caddy-sites:/etc/caddy/sites:ro
       - caddy_data:/data
       - caddy_config:/config
+    networks:
+      - default
+      - caddy-net
     depends_on:
       - portfolio
       - blog
@@ -79,3 +80,7 @@ volumes:
   caddy_data:
   caddy_config:
   pgdata:
+
+networks:
+  caddy-net:
+    external: true
